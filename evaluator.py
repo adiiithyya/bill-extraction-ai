@@ -20,11 +20,48 @@ def compare_fields(predicted, actual):
         "total",
     ]
 
+    # Compare main bill fields
     for field in fields:
         predicted_value = predicted.get(field)
         actual_value = actual.get(field)
 
         results[field] = predicted_value == actual_value
+
+    # Compare line items
+    predicted_items = predicted.get("items", [])
+    actual_items = actual.get("items", [])
+
+    results["items_count"] = len(predicted_items) == len(actual_items)
+
+    # Compare each item
+    for index, actual_item in enumerate(actual_items):
+
+        if index >= len(predicted_items):
+            break
+
+        predicted_item = predicted_items[index]
+
+        item_name = f"item_{index + 1}"
+
+        results[f"{item_name}_name"] = (
+            predicted_item.get("name")
+            == actual_item.get("name")
+        )
+
+        results[f"{item_name}_quantity"] = (
+            predicted_item.get("quantity")
+            == actual_item.get("quantity")
+        )
+
+        results[f"{item_name}_unit_price"] = (
+            predicted_item.get("unit_price")
+            == actual_item.get("unit_price")
+        )
+
+        results[f"{item_name}_total"] = (
+            predicted_item.get("total")
+            == actual_item.get("total")
+        )
 
     return results
 
@@ -49,14 +86,19 @@ def evaluate_bill(predicted_path, ground_truth_path):
     return results, accuracy
 
 
+# File paths
 predicted_path = Path("outputs/test_bill.json")
 ground_truth_path = Path("evaluation/ground_truth/test_bill.json")
 
+
+# Run evaluation
 results, accuracy = evaluate_bill(
     predicted_path,
     ground_truth_path
 )
 
+
+# Display results
 print("\nField-level evaluation:")
 
 for field, correct in results.items():
