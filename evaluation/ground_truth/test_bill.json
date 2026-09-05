@@ -1,0 +1,41 @@
+{
+  "vendor_name": "NSS MEDICAL MISSION HOSPITAL",
+  "invoice_number": "IS-000188421C",
+  "date": "19-Nov-2021",
+  "items": [
+    {
+      "name": "Consultation",
+      "quantity": 2,
+      "unit_price": 550,
+      "total": 1100
+    },
+    {
+      "name": "MinorProcedure",
+      "quantity": 1,
+      "unit_price": 470,
+      "total": 470
+    },
+    {
+      "name": "Pharmacy",
+      "quantity": 3,
+      "unit_price": 331.3,
+      "total": 993.9
+    },
+    {
+      "name": "ResidentManagement",
+      "quantity": 1,
+      "unit_price": 2400,
+      "total": 2400
+    },
+    {
+      "name": "OtherCharge",
+      "quantity": 1,
+      "unit_price": 750,
+      "total": 750
+    }
+  ],
+  "subtotal": 5713.9,
+  "tax": null,
+  "discount": null,
+  "total": 5713.9
+}
