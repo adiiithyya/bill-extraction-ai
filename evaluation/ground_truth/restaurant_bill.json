@@ -1,0 +1,41 @@
+{
+  "vendor_name": "Spice Garden Restaurant",
+  "invoice_number": "SG/2024/0176",
+  "date": "15 Aug 2024",
+  "items": [
+    {
+      "name": "Chicken Biryani",
+      "quantity": 2,
+      "unit_price": 220.00,
+      "total": 440.00
+    },
+    {
+      "name": "Butter Naan",
+      "quantity": 3,
+      "unit_price": 40.00,
+      "total": 120.00
+    },
+    {
+      "name": "Paneer Butter Masala",
+      "quantity": 1,
+      "unit_price": 180.00,
+      "total": 180.00
+    },
+    {
+      "name": "Fresh Lime Soda",
+      "quantity": 2,
+      "unit_price": 60.00,
+      "total": 120.00
+    },
+    {
+      "name": "Chocolate Brownie",
+      "quantity": 1,
+      "unit_price": 120.00,
+      "total": 120.00
+    }
+  ],
+  "subtotal": 980.00,
+  "tax": 49.00,
+  "discount": null,
+  "total": 1029.00
+}

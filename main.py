@@ -13,7 +13,12 @@ output_folder = Path("outputs")
 output_folder.mkdir(exist_ok=True)
 
 
-for image_path in bill_folder.glob("*.jpg"):
+supported_extensions = {".jpg", ".jpeg", ".png"}
+
+for image_path in bill_folder.iterdir():
+    if image_path.suffix.lower() not in supported_extensions:
+        continue
+        
     print(f"\nProcessing: {image_path.name}")
 
     bill = extract_bill(image_path)

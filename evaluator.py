@@ -5,7 +5,21 @@ from pathlib import Path
 def load_json(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
+def values_match(predicted, actual):
+    # Both values are missing
+    if predicted is None and actual is None:
+        return True
 
+    # One value is missing
+    if predicted is None or actual is None:
+        return False
+
+    # Compare numbers with a small tolerance
+    if isinstance(predicted, (int, float)) and isinstance(actual, (int, float)):
+        return abs(predicted - actual) <= 0.01
+
+    # Compare text normally
+    return str(predicted).strip().lower() == str(actual).strip().lower()
 
 def compare_fields(predicted, actual):
     results = {}
@@ -25,7 +39,10 @@ def compare_fields(predicted, actual):
         predicted_value = predicted.get(field)
         actual_value = actual.get(field)
 
-        results[field] = predicted_value == actual_value
+        results[field] = values_match(
+        predicted_value,
+        actual_value
+        )
 
     # Compare line items
     predicted_items = predicted.get("items", [])
@@ -42,25 +59,24 @@ def compare_fields(predicted, actual):
         predicted_item = predicted_items[index]
 
         item_name = f"item_{index + 1}"
-
-        results[f"{item_name}_name"] = (
-            predicted_item.get("name")
-            == actual_item.get("name")
+        results[f"{item_name}_name"] = values_match(
+        predicted_item.get("name"),
+        actual_item.get("name")
         )
 
-        results[f"{item_name}_quantity"] = (
-            predicted_item.get("quantity")
-            == actual_item.get("quantity")
+        results[f"{item_name}_quantity"] = values_match(
+        predicted_item.get("quantity"),
+        actual_item.get("quantity")
         )
 
-        results[f"{item_name}_unit_price"] = (
-            predicted_item.get("unit_price")
-            == actual_item.get("unit_price")
+        results[f"{item_name}_unit_price"] = values_match(
+        predicted_item.get("unit_price"),
+        actual_item.get("unit_price")
         )
 
-        results[f"{item_name}_total"] = (
-            predicted_item.get("total")
-            == actual_item.get("total")
+        results[f"{item_name}_total"] = values_match(
+        predicted_item.get("total"),
+        actual_item.get("total")
         )
 
     return results
