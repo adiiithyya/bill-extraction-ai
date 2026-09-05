@@ -86,23 +86,56 @@ def evaluate_bill(predicted_path, ground_truth_path):
     return results, accuracy
 
 
-# File paths
-predicted_path = Path("outputs/test_bill.json")
-ground_truth_path = Path("evaluation/ground_truth/test_bill.json")
+# Folders containing predictions and ground truth
+predicted_folder = Path("outputs")
+ground_truth_folder = Path("evaluation/ground_truth")
 
 
-# Run evaluation
-results, accuracy = evaluate_bill(
-    predicted_path,
-    ground_truth_path
-)
+# Find all predicted JSON files
+predicted_files = list(predicted_folder.glob("*.json"))
+
+if not predicted_files:
+    print("No prediction files found.")
+else:
+    all_accuracies = []
+
+    print("\n========== BILL EVALUATION ==========")
+
+    for predicted_path in predicted_files:
+
+        ground_truth_path = (
+            ground_truth_folder / predicted_path.name
+        )
+
+        if not ground_truth_path.exists():
+            print(
+                f"\nSkipping {predicted_path.name}: "
+                "ground truth not found."
+            )
+            continue
+
+        results, accuracy = evaluate_bill(
+            predicted_path,
+            ground_truth_path
+        )
+
+        print(f"\nBill: {predicted_path.name}")
+
+        for field, correct in results.items():
+            status = "PASS" if correct else "FAIL"
+            print(f"{field}: {status}")
+
+        print(f"Accuracy: {accuracy:.2f}%")
+
+        all_accuracies.append(accuracy)
 
 
-# Display results
-print("\nField-level evaluation:")
+    # Calculate average accuracy
+    if all_accuracies:
+        average_accuracy = (
+            sum(all_accuracies) / len(all_accuracies)
+        )
 
-for field, correct in results.items():
-    status = "PASS" if correct else "FAIL"
-    print(f"{field}: {status}")
-
-print(f"\nField Accuracy: {accuracy:.2f}%")
+        print("\n====================================")
+        print(f"Bills evaluated: {len(all_accuracies)}")
+        print(f"Average field accuracy: {average_accuracy:.2f}%")
