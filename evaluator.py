@@ -17,9 +17,10 @@ def values_match(predicted, actual):
     # Compare numbers with a small tolerance
     if isinstance(predicted, (int, float)) and isinstance(actual, (int, float)):
         return abs(predicted - actual) <= 0.01
-
-    # Compare text normally
-    return str(predicted).strip().lower() == str(actual).strip().lower()
+    # Compare text after normalizing whitespace and case
+    predicted_text = " ".join(str(predicted).strip().lower().split())
+    actual_text = " ".join(str(actual).strip().lower().split())
+    return predicted_text == actual_text
 
 def compare_fields(predicted, actual):
     results = {}

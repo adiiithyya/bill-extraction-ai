@@ -55,8 +55,18 @@ def extract_bill(image_path):
                     - Discount
                     - Final total
 
-                    If a field is not present on the bill, return null.
-                    Do not guess information.
+                    Only extract values that are explicitly printed on the bill.
+
+		    If a field is not explicitly shown, return null.
+	            Do not calculate, derive, or infer missing fields from other values.
+
+		    Pay special attention to the totals section:
+		    - "Subtotal" must only be extracted if the bill explicitly labels a value as Subtotal.
+		    - "Tax" must only be extracted if tax is explicitly shown.
+		    - "Discount" must only be extracted if a discount is explicitly shown.
+		    - Do not treat "Total", "Net Amount", "Taxable Value", or other similar fields as Subtotal.
+		    For tax, if the bill explicitly shows multiple tax components such as CGST and SGST, extract their combined amount as 		    the tax value.
+		    For the date, carefully inspect the invoice header and any field labeled Invoice Date, Date, or similar. Extract the 		    date exactly as printed.
                     """
                 ],
                 config={

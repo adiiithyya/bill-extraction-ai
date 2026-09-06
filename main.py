@@ -21,7 +21,13 @@ for image_path in bill_folder.iterdir():
         
     print(f"\nProcessing: {image_path.name}")
 
-    bill = extract_bill(image_path)
+    try:
+    	bill = extract_bill(image_path)
+
+    except Exception as e:
+    	print(f"Extraction failed for {image_path.name}: {e}")
+    	print("Skipping this bill and continuing...\n")
+    	continue
 
     output_path = output_folder / f"{image_path.stem}.json"
 

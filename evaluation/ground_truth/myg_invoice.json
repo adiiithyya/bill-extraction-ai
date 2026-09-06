@@ -1,0 +1,29 @@
+{
+  "vendor_name": "MYG INDIA PVT LTD",
+  "invoice_number": "26-I-TRTR-5816",
+  "date": "23-08-2026",
+  "items": [
+    {
+      "name": "APPLE 20W USB C POWER ADAPTER MUVR3HN/ A NEW Imei/Batch:-SHHY61970247263MAS",
+      "quantity": 1,
+      "unit_price": 1855.93,
+      "total": 2190.00
+    },
+    {
+      "name": "GADMY GM 450 60W TYPE C TO TYPE C DATA C ABLE MSI Imei/Batch:-26ACC0008800002",
+      "quantity": 1,
+      "unit_price": 380.51,
+      "total": 449.00
+    },
+    {
+      "name": "PAPER CARRY BAG GENERAL STATIONERY Imei/Batch:-26STY0034810275",
+      "quantity": 1,
+      "unit_price": 0.01,
+      "total": 0.01
+    }
+  ],
+  "subtotal": 2639.01,
+  "tax": 402.56,
+  "discount": null,
+  "total": 2639.00
+}
