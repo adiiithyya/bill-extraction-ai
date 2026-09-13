@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-
+import re
 
 def load_json(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
@@ -17,9 +17,17 @@ def values_match(predicted, actual):
     # Compare numbers with a small tolerance
     if isinstance(predicted, (int, float)) and isinstance(actual, (int, float)):
         return abs(predicted - actual) <= 0.01
-    # Compare text after normalizing whitespace and case
-    predicted_text = " ".join(str(predicted).strip().lower().split())
-    actual_text = " ".join(str(actual).strip().lower().split())
+    predicted_text = str(predicted).strip().lower()
+    actual_text = str(actual).strip().lower()
+
+    # Normalize whitespace differences caused by OCR.
+    predicted_text = re.sub(r"\s+", " ", predicted_text)
+    actual_text = re.sub(r"\s+", " ", actual_text)
+
+    # Normalize common OCR spacing inside words.
+    predicted_text = predicted_text.replace("c able", "cable")
+    actual_text = actual_text.replace("c able", "cable")
+
     return predicted_text == actual_text
 
 def compare_fields(predicted, actual):

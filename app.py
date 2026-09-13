@@ -1,12 +1,12 @@
 import json
 import os
 import tempfile
-
+from pathlib import Path
 import streamlit as st
 
 from extractor import extract_bill
 from validator import validate_bill
-
+from models import Bill
 
 st.set_page_config(
     page_title="Bill Extraction AI",
@@ -21,7 +21,11 @@ st.caption(
 )
 
 st.divider()
-
+mode = st.radio(
+    "Mode",
+    ["AI Extraction", "Demo Mode"],
+    horizontal=True
+)
 
 uploaded_file = st.file_uploader(
     "Upload a bill image",
@@ -29,7 +33,39 @@ uploaded_file = st.file_uploader(
     help="Supported formats: JPG, JPEG and PNG"
 )
 
+if mode == "Demo Mode":
 
+    output_folder = Path("outputs")
+    demo_files = list(output_folder.glob("*.json"))
+
+    if demo_files:
+
+        selected_file = st.selectbox(
+            "Select an extracted bill",
+            demo_files,
+            format_func=lambda path: path.stem
+        )
+
+        if st.button(
+            "📂 Load Demo Bill",
+            type="primary",
+            use_container_width=True
+        ):
+
+            with open(
+                selected_file,
+                "r",
+                encoding="utf-8"
+            ) as f:
+                bill_data = json.load(f)
+
+            bill = Bill.model_validate(bill_data)
+            st.session_state["bill"] = bill
+
+    else:
+        st.info(
+            "No extracted bill files found in the outputs folder."
+        )
 if uploaded_file is not None:
 
     left, right = st.columns(2)

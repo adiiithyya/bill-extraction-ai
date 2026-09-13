@@ -30,7 +30,7 @@ def extract_bill(image_path):
     with open(image_path, "rb") as f:
         image_bytes = f.read()
 
-    for attempt in range(3):
+    for attempt in range(2):
         try:
             response = client.models.generate_content(
                 model="gemini-3.7-flash",
@@ -57,17 +57,24 @@ def extract_bill(image_path):
 
                     Only extract values that are explicitly printed on the bill.
 
-		    If a field is not explicitly shown, return null.
-	            Do not calculate, derive, or infer missing fields from other values.
+                    If a field is not explicitly shown, return null.
+                    Do not calculate, derive, or infer missing fields.
 
-		    Pay special attention to the totals section:
-		    - "Subtotal" must only be extracted if the bill explicitly labels a value as Subtotal.
-		    - "Tax" must only be extracted if tax is explicitly shown.
-		    - "Discount" must only be extracted if a discount is explicitly shown.
-		    - Do not treat "Total", "Net Amount", "Taxable Value", or other similar fields as Subtotal.
-		    For tax, if the bill explicitly shows multiple tax components such as CGST and SGST, extract their combined amount as 		    the tax value.
-		    For the date, carefully inspect the invoice header and any field labeled Invoice Date, Date, or similar. Extract the 		    date exactly as printed.
-                    """
+                    For the date, carefully inspect the invoice header.
+                    Check fields labeled Invoice Date, Invoice Dt, Date,
+                    or similar. Extract the date exactly as printed.
+
+                    For the totals section:
+                    - Extract Subtotal only when explicitly labeled Subtotal.
+                    - Do not treat Taxable Value as Subtotal.
+                    - Extract Tax only when tax is explicitly shown.
+                    - If CGST and SGST are both explicitly shown,
+                      return their combined amount as tax.
+                    - Extract Discount only when explicitly shown.
+                    - Extract Total only from the explicitly labeled final total.
+
+                    Pay special attention to all printed values and labels.
+                    """,
                 ],
                 config={
                     "response_mime_type": "application/json",
@@ -78,10 +85,20 @@ def extract_bill(image_path):
             return Bill.model_validate_json(response.text)
 
         except Exception as e:
-            if ("503" in str(e) or "UNAVAILABLE" in str(e)) and attempt < 2:
+            error_text = str(e)
+
+            if "429" in error_text:
                 print(
-                    f"Gemini is busy. Retrying... ({attempt + 1}/2)"
+                    "Gemini rate limit reached. "
+                    "Please wait before retrying."
                 )
-                time.sleep(3)
+                raise
+
+            if "503" in error_text and attempt == 0:
+                print(
+                    "Gemini is busy. "
+                    "Retrying once in 10 seconds..."
+                )
+                time.sleep(10)
             else:
                 raise
